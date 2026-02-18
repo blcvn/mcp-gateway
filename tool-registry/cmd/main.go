@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/blcvn/backend/services/ba-tool-registry/internal/handler"
@@ -31,8 +33,27 @@ func main() {
 	log.Println("Tool Registry Service started")
 	log.Printf("Registry initialized with %d tools", countTools(registry))
 
-	// Keep service running
-	select {}
+	http.HandleFunc("/tools", func(w http.ResponseWriter, r *http.Request) {
+		tools, _ := registry.ListTools()
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(tools)
+	})
+
+	http.HandleFunc("/tools/register", func(w http.ResponseWriter, r *http.Request) {
+		var tool models.Tool
+		if err := json.NewDecoder(r.Body).Decode(&tool); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		if err := registry.RegisterTool(&tool); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusCreated)
+	})
+
+	log.Println("Listening on :8081")
+	log.Fatal(http.ListenAndServe(":8081", nil))
 }
 
 func countTools(r *handler.ToolRegistry) int {

@@ -1,0 +1,55 @@
+# Skill Definition Schema (JSON Scaled to YAML)
+# File: schema/skill.yaml
+# Purpose: Validate skill definition files
+
+$schema: "http://json-schema.org/draft-07/schema#"
+type: object
+properties:
+  apiVersion:
+    type: string
+    default: "v1"
+  kind:
+    type: string
+    const: "Skill"
+  metadata:
+    type: object
+    properties:
+      id:
+        type: string
+        description: "Unique identifier (kebab-case)"
+      name:
+        type: string
+      labels:
+        type: object
+    required: ["id", "name"]
+  spec:
+    type: object
+    properties:
+      description:
+        type: string
+      steps:
+        type: array
+        items:
+          type: object
+          properties:
+            stepId:
+              type: string
+            action:
+              type: string # e.g., "call_agent", "run_tool", "loop"
+            params:
+              type: object # Dynamic parameters
+            outputs:
+              type: array
+              items:
+                type: string
+          required: ["stepId", "action"]
+      inputs:
+        type: array
+        items:
+          type: string # Variables used in steps
+      outputs:
+        type: array
+        items:
+          type: string # Final result variables
+    required: ["steps", "inputs", "outputs"]
+required: ["apiVersion", "kind", "metadata", "spec"]

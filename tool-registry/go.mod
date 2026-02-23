@@ -1,4 +1,4 @@
-module github.com/blcvn/backend/services/ba-tool-registry
+module github.com/blcvn/mcp-gateway/tool-registry
 
 go 1.24.0
 

@@ -1,4 +1,4 @@
-module atlassian-mcp
+module github.com/blcvn/mcp-gateway/atlassian-mcp
 
 go 1.25.5
 

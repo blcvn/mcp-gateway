@@ -1,4 +1,4 @@
-module github.com/blcvn/backend/services/ba-mcp-server
+module github.com/blcvn/mcp-gateway/mcp-server
 
 go 1.24.0
 
